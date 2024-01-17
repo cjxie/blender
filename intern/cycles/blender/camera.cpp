@@ -241,17 +241,17 @@ static void blender_camera_from_object(BlenderCamera *bcam,
     bcam->longitude_min = b_camera.longitude_min();
     bcam->longitude_max = b_camera.longitude_max();
 
-    bcam->a0 = b_camera.a0();
-    bcam->a1 = b_camera.a1();
-    bcam->a2 = b_camera.a2();
-    bcam->a3 = b_camera.a3();
-    bcam->a4 = b_camera.a4();
-    bcam->c = b_camera.c();
-    bcam->d = b_camera.d();
-    bcam->e = b_camera.e();
-    bcam->shift_cx = b_camera.shift_cx();
-    bcam->shift_cy = b_camera.shift_cy();
-    bcam->radius = b_camera.radius();
+    bcam->a0 = b_camera->a0;
+    bcam->a1 = b_camera->a1;
+    bcam->a2 = b_camera->a2;
+    bcam->a3 = b_camera->a3;
+    bcam->a4 = b_camera->a4;
+    bcam->c = b_camera->c;
+    bcam->d = b_camera->d;
+    bcam->e = b_camera->e;
+    bcam->shift_cx = b_camera->shift_cx;
+    bcam->shift_cy = b_camera->shift_cy;
+    bcam->radius = b_camera->radius;
 
     bcam->fisheye_polynomial_k0 = b_camera.fisheye_polynomial_k0();
     bcam->fisheye_polynomial_k1 = b_camera.fisheye_polynomial_k1();
@@ -531,7 +531,7 @@ static void blender_camera_sync(Camera *cam,
   cam->set_fisheye_fov(bcam->fisheye_fov);
   cam->set_fisheye_lens(bcam->fisheye_lens);
   cam->set_latitude_min(bcam->latitude_min);
-  cam->set_latitude_max(bcam->latitude_max)
+  cam->set_latitude_max(bcam->latitude_max);
 
   cam->set_fisheye_polynomial_k0(bcam->fisheye_polynomial_k0);
   cam->set_fisheye_polynomial_k1(bcam->fisheye_polynomial_k1);
@@ -543,17 +543,17 @@ static void blender_camera_sync(Camera *cam,
   cam->set_longitude_max(bcam->longitude_max);
 
   /* Scaramuzza */
-  cam->set_a0(bcam.a0());
-  cam->set_a1(bcam.a1());
-  cam->set_a2(bcam.a2());
-  cam->set_a3(bcam.a3());
-  cam->set_a4(bcam.a4());
-  cam->set_c(bcam.c());
-  cam->set_d(bcam.d());
-  cam->set_e(bcam.e());
-  cam->set_shift_cx(bcama.shift_cx());
-  cam->set_shift_cy(bcam.shift_cy());
-  cam->set_radius(bcam.radius());
+  cam->set_a0(bcam->a0);
+  cam->set_a1(bcam->a1);
+  cam->set_a2(bcam->a2);
+  cam->set_a3(bcam->a3);
+  cam->set_a4(bcam->a4);
+  cam->set_c(bcam->c);
+  cam->set_d(bcam->d);
+  cam->set_e(bcam->e);
+  cam->set_shift_cx(bcam->shift_cx);
+  cam->set_shift_cy(bcam->shift_cy);
+  cam->set_radius(bcam->radius);
 
   /* panorama stereo */
   cam->set_interocular_distance(bcam->interocular_distance);

@@ -279,7 +279,7 @@ ccl_device_inline float3 panorama_to_direction(ccl_constant KernelCamera *cam, f
                               cam->width, cam->height, cam->radius * cam->height / 2.f,
                               cam->a0, cam->a1, cam->a2, cam->a3, cam->a4,
                               cam->c, cam->d, cam->e,
-                              cam->width / 2.f + cam.shift_cx, cam->height / 2.f + cam.shift_cy,
+                              cam->width / 2.f + cam->shift_cx, cam->height / 2.f + cam->shift_cy,
                               1.f / (cam->c - cam->d * cam->e));
     case PANORAMA_FISHEYE_EQUISOLID:
     default:
@@ -309,7 +309,7 @@ ccl_device_inline float2 direction_to_panorama(ccl_constant KernelCamera *cam, f
 		  return direction_to_omni(dir,
                               cam->width,
                               cam->height,
-                              cam.c,
+                              cam->c,
                               cam->d,
                               cam->e,
                               cam->width / 2.f + cam->shift_cx,
