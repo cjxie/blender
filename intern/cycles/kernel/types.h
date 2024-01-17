@@ -548,6 +548,8 @@ enum PanoramaType {
   PANORAMA_MIRRORBALL = 3,
   PANORAMA_FISHEYE_LENS_POLYNOMIAL = 4,
   PANORAMA_EQUIANGULAR_CUBEMAP_FACE = 5,
+  PANORAMA_OMNI = 6,
+  PANORAMA_MEI = 7,
 
   PANORAMA_NUM_TYPES,
 };
@@ -1088,6 +1090,20 @@ typedef struct KernelCamera {
   float fisheye_fov;
   float fisheye_lens;
   float fisheye_lens_polynomial_bias;
+
+  /* Scaramuzza */
+  float a0;
+  float a1;
+  float a2;
+  float a3;
+  float a4;
+  float c;
+  float d;
+  float e;
+	float shift_cx;
+	float shift_cy;
+	float radius;
+
   float4 equirectangular_range;
   float4 fisheye_lens_polynomial_coefficients;
 

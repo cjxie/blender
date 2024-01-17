@@ -164,6 +164,39 @@ ccl_device float2 direction_to_fisheye_lens_polynomial(
   return make_float2(u, v);
 }
 
+/* Scaramuzza model <-> Cartesion direction */
+
+ccl_device float3 omni_to_direction(float u, float v, float imageWidth,	float imageHeight,	float radiusPixels,
+	float a0,	float a1,	float a2,	float a3,	float a4,	float kC,	float kD,	float kE,	float cx,	float cy,	float invDetAffine) 
+{
+	// scale coordinates and shift center
+	u = u * imageWidth - cx;
+	v = imageHeight * (1.f - v) - cy;
+
+	if(radiusPixels > 0.f && u*u + v*v > radiusPixels*radiusPixels)
+		return make_float3(0.f, 0.f, 0.f);
+
+	// inverse affine transformation
+	const float affine_u = invDetAffine * (kC * u - kE * v);
+	const float affine_v = invDetAffine * (-kD * u + v);
+
+	// ray z-direction
+	const float rho2 = affine_u * affine_u + affine_v * affine_v;
+	const float rho = sqrtf(rho2);
+	const float z = a0 + a1*rho + a2*rho2 + a3*rho2*rho + a4*rho2*rho2;
+	const float invnorm = 1.f / sqrtf(affine_u*affine_u + affine_v*affine_v + z*z);
+
+	return make_float3(- invnorm * z,- invnorm * affine_u,- invnorm * affine_v);
+}
+
+ccl_device float2 direction_to_omni(float3 dir,	float imageWidth,	float imageHeight,
+	float kC,	float kD,	float kE,	float cx,	float cy)
+{
+	// Not implemented yet.
+	return make_float2(0.0f, 0.0f);
+}
+
+
 /* Mirror Ball <-> Cartesion direction */
 
 ccl_device float3 mirrorball_to_direction(float u, float v)
@@ -241,6 +274,13 @@ ccl_device_inline float3 panorama_to_direction(ccl_constant KernelCamera *cam, f
                                                   cam->fisheye_fov,
                                                   cam->sensorwidth,
                                                   cam->sensorheight);
+    case PANORAMA_OMNI:
+      return omni_to_direction(u, v,
+                              cam->width, cam->height, cam->radius * cam->height / 2.f,
+                              cam->a0, cam->a1, cam->a2, cam->a3, cam->a4,
+                              cam->c, cam->d, cam->e,
+                              cam->width / 2.f + cam.shift_cx, cam->height / 2.f + cam.shift_cy,
+                              1.f / (cam->c - cam->d * cam->e));
     case PANORAMA_FISHEYE_EQUISOLID:
     default:
       return fisheye_equisolid_to_direction(
@@ -265,6 +305,16 @@ ccl_device_inline float2 direction_to_panorama(ccl_constant KernelCamera *cam, f
                                                   cam->fisheye_lens_polynomial_coefficients,
                                                   cam->sensorwidth,
                                                   cam->sensorheight);
+    case PANORAMA_OMNI:
+		  return direction_to_omni(dir,
+                              cam->width,
+                              cam->height,
+                              cam.c,
+                              cam->d,
+                              cam->e,
+                              cam->width / 2.f + cam->shift_cx,
+                              cam->height / 2.f + cam->shift_cy);
+      
     case PANORAMA_FISHEYE_EQUISOLID:
     default:
       return direction_to_fisheye_equisolid(

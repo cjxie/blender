@@ -123,6 +123,27 @@ class DATA_PT_lens(CameraButtonsPanel, Panel):
                     col.prop(cam, "fisheye_polynomial_k2", text="K2")
                     col.prop(cam, "fisheye_polynomial_k3", text="K3")
                     col.prop(cam, "fisheye_polynomial_k4", text="K4")
+                elif cam.panorama_type == 'OMNI':
+                    # row = layout.row()
+                    sub = col.column(align=True)
+                    sub.label(text="Polynomial:")
+                    sub.prop(cam, "a0")
+                    sub.prop(cam, "a1")
+                    sub.prop(cam, "a2")
+                    sub.prop(cam, "a3")
+                    sub.prop(cam, "a4")
+                    sub = col.column(align=True)
+                    sub.label(text="Shift (pixels):")
+                    sub.prop(cam, "shift_cx", text="X")
+                    sub.prop(cam, "shift_cy", text="Y")
+                    sub = col.column(align=True)
+                    sub.label(text="Affine parameters:")
+                    sub.prop(cam, "c")
+                    sub.prop(cam, "d")
+                    sub.prop(cam, "e")
+                    sub = col.column(align=True)
+                    sub.label(text="Radius (scale factor of half-height):")
+                    sub.prop(cam, "radius", text="Radius")
 
             elif engine in {'BLENDER_RENDER', 'BLENDER_EEVEE', 'BLENDER_EEVEE_NEXT', 'BLENDER_WORKBENCH'}:
                 if cam.lens_unit == 'MILLIMETERS':

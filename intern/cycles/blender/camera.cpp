@@ -51,6 +51,19 @@ struct BlenderCamera {
   float latitude_max;
   float longitude_min;
   float longitude_max;
+
+  float a0;
+  float a1;
+  float a2;
+  float a3;
+  float a4;
+  float c;
+  float d;
+  float e;
+	float shift_cx;
+	float shift_cy;
+	float radius;
+
   bool use_spherical_stereo;
   float interocular_distance;
   float convergence_distance;
@@ -180,6 +193,10 @@ static PanoramaType blender_panorama_type_to_cycles(const BL::Camera::panorama_t
       return PANORAMA_FISHEYE_EQUISOLID;
     case BL::Camera::panorama_type_FISHEYE_LENS_POLYNOMIAL:
       return PANORAMA_FISHEYE_LENS_POLYNOMIAL;
+    case BL::Camera::panorama_type_OMNI:
+      return PANORAMA_OMNI;
+    case BL::Camera::panorama_type_MEI:
+      return PANORAMA_MEI;
   }
   /* Could happen if loading a newer file that has an unsupported type. */
   return PANORAMA_FISHEYE_EQUISOLID;
@@ -223,6 +240,18 @@ static void blender_camera_from_object(BlenderCamera *bcam,
     bcam->latitude_max = b_camera.latitude_max();
     bcam->longitude_min = b_camera.longitude_min();
     bcam->longitude_max = b_camera.longitude_max();
+
+    bcam->a0 = b_camera.a0();
+    bcam->a1 = b_camera.a1();
+    bcam->a2 = b_camera.a2();
+    bcam->a3 = b_camera.a3();
+    bcam->a4 = b_camera.a4();
+    bcam->c = b_camera.c();
+    bcam->d = b_camera.d();
+    bcam->e = b_camera.e();
+    bcam->shift_cx = b_camera.shift_cx();
+    bcam->shift_cy = b_camera.shift_cy();
+    bcam->radius = b_camera.radius();
 
     bcam->fisheye_polynomial_k0 = b_camera.fisheye_polynomial_k0();
     bcam->fisheye_polynomial_k1 = b_camera.fisheye_polynomial_k1();
@@ -458,7 +487,9 @@ static void blender_camera_sync(Camera *cam,
 
   /* panorama sensor */
   if (bcam->type == CAMERA_PANORAMA && (bcam->panorama_type == PANORAMA_FISHEYE_EQUISOLID ||
-                                        bcam->panorama_type == PANORAMA_FISHEYE_LENS_POLYNOMIAL))
+                                        bcam->panorama_type == PANORAMA_FISHEYE_LENS_POLYNOMIAL ||
+                                        bcam->panorama_type == PANORAMA_OMNI ||
+                                        bcam->panorama_type == PANORAMA_MEI))
   {
     float fit_xratio = (float)bcam->render_width * bcam->pixelaspect.x;
     float fit_yratio = (float)bcam->render_height * bcam->pixelaspect.y;
@@ -500,7 +531,7 @@ static void blender_camera_sync(Camera *cam,
   cam->set_fisheye_fov(bcam->fisheye_fov);
   cam->set_fisheye_lens(bcam->fisheye_lens);
   cam->set_latitude_min(bcam->latitude_min);
-  cam->set_latitude_max(bcam->latitude_max);
+  cam->set_latitude_max(bcam->latitude_max)
 
   cam->set_fisheye_polynomial_k0(bcam->fisheye_polynomial_k0);
   cam->set_fisheye_polynomial_k1(bcam->fisheye_polynomial_k1);
@@ -510,6 +541,19 @@ static void blender_camera_sync(Camera *cam,
 
   cam->set_longitude_min(bcam->longitude_min);
   cam->set_longitude_max(bcam->longitude_max);
+
+  /* Scaramuzza */
+  cam->set_a0(bcam.a0());
+  cam->set_a1(bcam.a1());
+  cam->set_a2(bcam.a2());
+  cam->set_a3(bcam.a3());
+  cam->set_a4(bcam.a4());
+  cam->set_c(bcam.c());
+  cam->set_d(bcam.d());
+  cam->set_e(bcam.e());
+  cam->set_shift_cx(bcama.shift_cx());
+  cam->set_shift_cy(bcam.shift_cy());
+  cam->set_radius(bcam.radius());
 
   /* panorama stereo */
   cam->set_interocular_distance(bcam->interocular_distance);
