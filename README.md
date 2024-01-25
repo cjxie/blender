@@ -22,7 +22,7 @@ Use blender to generate systhesized omnnidirectional images
 
     Change the gcc version before make.
 
-    make -j12 BUILD_CMAKE_ARGS=" -D PYTHON_ROOT_DIR=/opt/lib/python-3.4 -D OPENCOLORIO_ROOT_DIR=/opt/lib/ocio -D WITH_CYCLES_OSL=OFF -D WITH_LLVM=OFF -D WITH_CODEC_FFMPEG=ON -D FFMPEG_LIBRARIES='avformat;avcodec;avutil;avdevice;swscale;rt;theora;theoradec;theoraenc;vorbis;vorbisenc;vorbisfile;ogg;x264;openjp2' -D FFMPEG=/opt/lib/ffmpeg"
+    make -j4 BUILD_CMAKE_ARGS=" -D PYTHON_ROOT_DIR=/opt/lib/python-3.4 -D OPENCOLORIO_ROOT_DIR=/opt/lib/ocio -D WITH_CYCLES_OSL=OFF -D WITH_LLVM=OFF -D WITH_CODEC_FFMPEG=ON -D FFMPEG_LIBRARIES='avformat;avcodec;avutil;avdevice;swscale;rt;theora;theoradec;theoraenc;vorbis;vorbisenc;vorbisfile;ogg;x264;openjp2' -D FFMPEG=/opt/lib/ffmpeg"
 
 5. Compile complete
 
