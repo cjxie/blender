@@ -100,11 +100,12 @@ def svn_update(args: argparse.Namespace, release_version: Optional[str]) -> None
         # is used by the buildbot.
         lib_platform = "win64_vc15"
     elif args.use_linux_libraries:
+        
         lib_platform = "linux_x86_64_glibc_228"
     else:
         # No precompiled libraries for Linux.
         lib_platform = None
-
+    print(lib_platform)
     if lib_platform:
         lib_platform_dirpath = os.path.join(lib_dirpath, lib_platform)
 

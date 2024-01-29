@@ -90,6 +90,8 @@ NODE_DEFINE(Camera)
   panorama_type_enum.insert("fisheye_equidistant", PANORAMA_FISHEYE_EQUIDISTANT);
   panorama_type_enum.insert("fisheye_equisolid", PANORAMA_FISHEYE_EQUISOLID);
   panorama_type_enum.insert("fisheye_lens_polynomial", PANORAMA_FISHEYE_LENS_POLYNOMIAL);
+  panorama_type_enum.insert("omnidirection", PANORAMA_OMNIDIRECTION);
+  panorama_type_enum.insert("mei", PANORAMA_MEI);
   SOCKET_ENUM(panorama_type, "Panorama Type", panorama_type_enum, PANORAMA_EQUIRECTANGULAR);
 
   SOCKET_FLOAT(fisheye_fov, "Fisheye FOV", M_PI_F);
@@ -101,6 +103,18 @@ NODE_DEFINE(Camera)
   SOCKET_FLOAT(fov, "FOV", M_PI_4_F);
   SOCKET_FLOAT(fov_pre, "FOV Pre", M_PI_4_F);
   SOCKET_FLOAT(fov_post, "FOV Post", M_PI_4_F);
+
+  // Initialize the ui interface node with default value
+  SOCKET_FLOAT(xi, "Mirror parameter", 1);
+  SOCKET_FLOAT(k1, "Distortion k1", 0);
+  SOCKET_FLOAT(k2, "Distortion k2", 0);
+  SOCKET_FLOAT(p1, "Distortion p1", 0);
+  SOCKET_FLOAT(p2, "Distortion p2", 0);
+  SOCKET_FLOAT(gamma1, "Fx",660);
+  SOCKET_FLOAT(gamma2, "Fy",660);
+  SOCKET_FLOAT(u0, "cx",960);
+  SOCKET_FLOAT(v0, "cy", 540);
+  SOCKET_FLOAT(radius, "radius", 0.0f);
 
   SOCKET_FLOAT(fisheye_polynomial_k0, "Fisheye Polynomial K0", 0.0f);
   SOCKET_FLOAT(fisheye_polynomial_k1, "Fisheye Polynomial K1", 0.0f);
@@ -420,6 +434,11 @@ void Camera::update(Scene *scene)
   kcam->fisheye_lens_polynomial_bias = fisheye_polynomial_k0;
   kcam->fisheye_lens_polynomial_coefficients = make_float4(
       fisheye_polynomial_k1, fisheye_polynomial_k2, fisheye_polynomial_k3, fisheye_polynomial_k4);
+
+  kcam->xi = xi;
+  kcam->mei_distortion = make_float4(k1, k2, p1, p2);
+  kcam->mei_projection = make_float4(gamma1, gamma2, u0, v0);
+  kcam->radius = radius;
 
   switch (stereo_eye) {
     case STEREO_LEFT:

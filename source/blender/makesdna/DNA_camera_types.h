@@ -102,6 +102,18 @@ typedef struct Camera {
   float fisheye_polynomial_k3;
   float fisheye_polynomial_k4;
 
+  /* Mei */
+  float xi;
+  float k1;
+  float k2;
+  float p1;
+  float p2;
+  float gamma1;
+  float gamma2;
+  float u0;
+  float v0;
+  float radius;
+
   /** Old animation system, deprecated for 2.5. */
   struct Ipo *ipo DNA_DEPRECATED;
 
@@ -136,6 +148,7 @@ enum {
   CAM_PANORAMA_MIRRORBALL = 3,
   CAM_PANORAMA_FISHEYE_LENS_POLYNOMIAL = 4,
   CAM_PANORAMA_EQUIANGULAR_CUBEMAP_FACE = 5,
+  CAM_PANORAMA_MEI=6,
 };
 
 /* dtx */

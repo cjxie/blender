@@ -56,6 +56,16 @@
     .fisheye_polynomial_k3 = 3.099275275886036e-06f,\
     .fisheye_polynomial_k4 = -2.6064646454854524e-08f,\
  \
+    .xi= 1.5027315915359778f,\
+    .k1= -0.13611306175891333f,\
+    .k2= 0.23508209887736620f,\
+    .p1= -0.0040859703137627844f,\
+    .p2= -0.0068372391577539507f,\
+    .gamma1= 667.74582550471905f,\
+    .gamma2= 664.02937007955575f,\
+    .u0= 976.28507216931200f,\
+    .v0= 570.84122055440332f,\
+    .radius= 0.5f,\
     .dof = _DNA_DEFAULT_CameraDOFSettings, \
  \
     .stereo = _DNA_DEFAULT_CameraStereoSettings, \

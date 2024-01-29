@@ -625,6 +625,11 @@ void RNA_def_camera(BlenderRNA *brna)
        "Fisheye Lens Polynomial",
        "Defines the lens projection as polynomial to allow real world camera lenses to be "
        "mimicked"},
+       {CAM_PANORAMA_MEI,
+       "MEI",
+       0,
+       "Omnidirectional Mei model",
+       "Mei model"},
       {0, nullptr, 0, nullptr, nullptr},
   };
 
@@ -919,6 +924,56 @@ void RNA_def_camera(BlenderRNA *brna)
   prop = RNA_def_property(srna, "fisheye_polynomial_k4", PROP_FLOAT, PROP_ANGLE);
   RNA_def_property_ui_range(prop, -FLT_MAX, FLT_MAX, 0.1, 6);
   RNA_def_property_ui_text(prop, "Fisheye Polynomial K4", "Coefficient K4 of the lens polynomial");
+  RNA_def_property_update(prop, NC_OBJECT | ND_DRAW, "rna_Camera_update");
+
+  prop = RNA_def_property(srna, "xi", PROP_FLOAT, PROP_DISTANCE_CAMERA);
+  RNA_def_property_ui_range(prop, -FLT_MAX, FLT_MAX, 0.1, 6);
+  RNA_def_property_ui_text(prop, "xi", "Coefficient Xi of the mirror");
+  RNA_def_property_update(prop, NC_OBJECT | ND_DRAW, "rna_Camera_update");
+
+  prop = RNA_def_property(srna, "k1", PROP_FLOAT, PROP_DISTANCE_CAMERA);
+  RNA_def_property_ui_range(prop, -FLT_MAX, FLT_MAX, 0.1, 6);
+  RNA_def_property_ui_text(prop, "K1", "Coefficient K1 of the lens distortion");
+  RNA_def_property_update(prop, NC_OBJECT | ND_DRAW, "rna_Camera_update");
+
+  prop = RNA_def_property(srna, "k2", PROP_FLOAT, PROP_DISTANCE_CAMERA);
+  RNA_def_property_ui_range(prop, -FLT_MAX, FLT_MAX, 0.1, 6);
+  RNA_def_property_ui_text(prop, "K2", "Coefficient K2 of the lens distortion");
+  RNA_def_property_update(prop, NC_OBJECT | ND_DRAW, "rna_Camera_update");
+
+  prop = RNA_def_property(srna, "p1", PROP_FLOAT, PROP_DISTANCE_CAMERA);
+  RNA_def_property_ui_range(prop, -FLT_MAX, FLT_MAX, 0.1, 6);
+  RNA_def_property_ui_text(prop, "P1", "Coefficient P1 of the lens distortion");
+  RNA_def_property_update(prop, NC_OBJECT | ND_DRAW, "rna_Camera_update");
+
+  prop = RNA_def_property(srna, "p2", PROP_FLOAT, PROP_DISTANCE_CAMERA);
+  RNA_def_property_ui_range(prop, -FLT_MAX, FLT_MAX, 0.1, 6);
+  RNA_def_property_ui_text(prop, "P2", "Coefficient P2 of the lens distortion");
+  RNA_def_property_update(prop, NC_OBJECT | ND_DRAW, "rna_Camera_update");
+
+  prop = RNA_def_property(srna, "gamma1", PROP_FLOAT, PROP_DISTANCE_CAMERA);
+  RNA_def_property_ui_range(prop, 0, FLT_MAX, 0.1, 6);
+  RNA_def_property_ui_text(prop, "x", "fx of the camera projection");
+  RNA_def_property_update(prop, NC_OBJECT | ND_DRAW, "rna_Camera_update");
+
+  prop = RNA_def_property(srna, "gamma2", PROP_FLOAT, PROP_DISTANCE_CAMERA);
+  RNA_def_property_ui_range(prop, 0, FLT_MAX, 0.1, 6);
+  RNA_def_property_ui_text(prop, "fy", "fy of the camera projection");
+  RNA_def_property_update(prop, NC_OBJECT | ND_DRAW, "rna_Camera_update");
+
+  prop = RNA_def_property(srna, "u0", PROP_FLOAT, PROP_DISTANCE_CAMERA);
+  RNA_def_property_ui_range(prop, 0, FLT_MAX, 0.1, 6);
+  RNA_def_property_ui_text(prop, "Mei optical center in x", "u0 of the camera projection");
+  RNA_def_property_update(prop, NC_OBJECT | ND_DRAW, "rna_Camera_update");
+
+  prop = RNA_def_property(srna, "v0", PROP_FLOAT, PROP_DISTANCE_CAMERA);
+  RNA_def_property_ui_range(prop, 0, FLT_MAX, 0.1, 6);
+  RNA_def_property_ui_text(prop, "Mei optical center in y", "v0 of the camera projection");
+  RNA_def_property_update(prop, NC_OBJECT | ND_DRAW, "rna_Camera_update");
+
+  prop = RNA_def_property(srna, "radius", PROP_FLOAT, PROP_DISTANCE_CAMERA);
+  RNA_def_property_ui_range(prop, 0, 1, 0.01, 5);
+  RNA_def_property_ui_text(prop, "Mei radius", "Radius of masking circle");
   RNA_def_property_update(prop, NC_OBJECT | ND_DRAW, "rna_Camera_update");
 
   /* pointers */

@@ -64,6 +64,18 @@ struct BlenderCamera {
   float fisheye_polynomial_k3;
   float fisheye_polynomial_k4;
 
+    // Mei
+  float xi;
+  float k1;
+  float k2;
+  float p1;
+  float p2;
+  float gamma1;
+  float gamma2;
+  float u0;
+  float v0;
+  float radius;
+
   enum { AUTO, HORIZONTAL, VERTICAL } sensor_fit;
   float sensor_width;
   float sensor_height;
@@ -180,6 +192,8 @@ static PanoramaType blender_panorama_type_to_cycles(const BL::Camera::panorama_t
       return PANORAMA_FISHEYE_EQUISOLID;
     case BL::Camera::panorama_type_FISHEYE_LENS_POLYNOMIAL:
       return PANORAMA_FISHEYE_LENS_POLYNOMIAL;
+    case BL::Camera::panorama_type_MEI:
+      return PANORAMA_MEI;
   }
   /* Could happen if loading a newer file that has an unsupported type. */
   return PANORAMA_FISHEYE_EQUISOLID;
@@ -223,6 +237,17 @@ static void blender_camera_from_object(BlenderCamera *bcam,
     bcam->latitude_max = b_camera.latitude_max();
     bcam->longitude_min = b_camera.longitude_min();
     bcam->longitude_max = b_camera.longitude_max();
+
+    bcam->xi = b_camera.xi();
+    bcam->k1 = b_camera.k1();
+    bcam->k2 = b_camera.k2();
+    bcam->p1 = b_camera.p1();
+    bcam->p2 = b_camera.p2();
+    bcam->gamma1 = b_camera.gamma1();
+    bcam->gamma2 = b_camera.gamma2();
+    bcam->u0 = b_camera.u0();
+    bcam->v0 = b_camera.v0();
+    bcam->radius = b_camera.radius();
 
     bcam->fisheye_polynomial_k0 = b_camera.fisheye_polynomial_k0();
     bcam->fisheye_polynomial_k1 = b_camera.fisheye_polynomial_k1();
@@ -501,6 +526,18 @@ static void blender_camera_sync(Camera *cam,
   cam->set_fisheye_lens(bcam->fisheye_lens);
   cam->set_latitude_min(bcam->latitude_min);
   cam->set_latitude_max(bcam->latitude_max);
+
+    /* Mei */
+  cam->set_xi(bcam->xi);
+	cam->set_k1(bcam->k1);
+	cam->set_k2(bcam->k2);
+	cam->set_p1(bcam->p1);
+	cam->set_p2(bcam->p2);
+	cam->set_gamma1(bcam->gamma1);
+	cam->set_gamma2(bcam->gamma2);
+	cam->set_u0(bcam->u0);
+	cam->set_v0(bcam->v0);
+  cam->set_radius(bcam->radius);
 
   cam->set_fisheye_polynomial_k0(bcam->fisheye_polynomial_k0);
   cam->set_fisheye_polynomial_k1(bcam->fisheye_polynomial_k1);

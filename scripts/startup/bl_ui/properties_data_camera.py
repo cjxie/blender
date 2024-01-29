@@ -123,6 +123,25 @@ class DATA_PT_lens(CameraButtonsPanel, Panel):
                     col.prop(cam, "fisheye_polynomial_k2", text="K2")
                     col.prop(cam, "fisheye_polynomial_k3", text="K3")
                     col.prop(cam, "fisheye_polynomial_k4", text="K4")
+                elif cam.panorama_type == 'MEI':
+                    row = layout.row()
+                    sub = row.column(align=True)
+                    sub.label(text="Mirror Parameter:")
+                    sub.prop(cam, "xi")
+                    sub.label(text="Distortion Parameter:")
+                    sub.prop(cam, "k1")
+                    sub.prop(cam, "k2")
+                    sub.prop(cam, "p1")
+                    sub.prop(cam, "p2")
+                    sub = row.column(align=True)
+                    sub.label(text="Projection Parameter:")
+                    sub.prop(cam, "gamma1", text="fx")
+                    sub.prop(cam, "gamma2", text="fy")
+                    sub.prop(cam, "u0", text="cx")
+                    sub.prop(cam, "v0", text="cy")
+                    sub = row.column(align=True)
+                    sub.label(text="Radius (scale factor of half-height):")
+                    sub.prop(cam, "radius", text="Radius")
 
             elif engine in {'BLENDER_RENDER', 'BLENDER_EEVEE', 'BLENDER_EEVEE_NEXT', 'BLENDER_WORKBENCH'}:
                 if cam.lens_unit == 'MILLIMETERS':
@@ -134,9 +153,10 @@ class DATA_PT_lens(CameraButtonsPanel, Panel):
         col = layout.column()
         col.separator()
 
-        sub = col.column(align=True)
-        sub.prop(cam, "shift_x", text="Shift X")
-        sub.prop(cam, "shift_y", text="Y")
+        if not cam.panorama_type == "MEI":
+            sub = col.column(align=True)
+            sub.prop(cam, "shift_x", text="Shift X")
+            sub.prop(cam, "shift_y", text="Y")
 
         col.separator()
         sub = col.column(align=True)

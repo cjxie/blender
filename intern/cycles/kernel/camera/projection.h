@@ -164,6 +164,69 @@ ccl_device float2 direction_to_fisheye_lens_polynomial(
   return make_float2(u, v);
 }
 
+ccl_device float3 mei_to_direction(float u, float v,float imageWidth, float imageHeight,float radiusPixels,
+	float xi, float4 distortion, float4 projection) 
+	{
+    float k1, k2, p1, p2;
+    k1 = distortion.x;
+    k2 = distortion.y;
+    p1 = distortion.z;
+    p2 = distortion.w;
+    float gamma1, gamma2, u0, v0;
+    gamma1 = projection.x;
+    gamma2 = projection.y;
+    u0 = projection.z;
+    v0 = projection.w;
+
+    float mx_d, my_d, mx2_d, mxy_d, my2_d, mx_u, my_u;
+    float rho2_d, rho4_d, radDist_d, Dx_d, Dy_d, inv_denom_d;
+
+		// scale coordinates and shift center
+		u = u * imageWidth - u0;
+		v = imageHeight * (1.f - v) - v0;
+
+    if(u*u + v*v > imageWidth*imageWidth/4)
+			return make_float3(0.f, 0.f, 0.f);
+
+		if(radiusPixels > 0.f && u*u + v*v < radiusPixels*radiusPixels)
+			return make_float3(0.f, 0.f, 0.f);
+
+		mx_d = u / gamma1;
+		my_d = v / gamma2;
+
+		// Apply inverse distortion model
+		// proposed by Heikkila
+		mx2_d = mx_d * mx_d;
+		my2_d = my_d * my_d;
+		mxy_d = mx_d * my_d;
+		rho2_d = mx2_d + my2_d;
+		rho4_d = rho2_d * rho2_d;
+		radDist_d = k1 * rho2_d + k2 * rho4_d;
+		Dx_d = mx_d * radDist_d + p2 * (rho2_d + 2 * mx2_d) + 2 * p1 * mxy_d;
+		Dy_d = my_d * radDist_d + p1 * (rho2_d + 2 * my2_d) + 2 * p2 * mxy_d;
+		inv_denom_d = 1 / (1 + 4 * k1 * rho2_d + 6 * k2 * rho4_d + 8 * p1 * my_d + 8 * p2 * mx_d);
+
+		mx_u = mx_d - inv_denom_d * Dx_d;
+		my_u = my_d - inv_denom_d * Dy_d;
+
+		// Reuse variable
+		rho2_d = mx_u * mx_u + my_u * my_u;
+		float z = 1 - xi * (rho2_d + 1) / (xi + sqrt(1 + (1 - xi * xi) * rho2_d));
+		const float invnorm = 1.f / sqrtf(rho2_d + z*z);
+		
+		return make_float3(z * invnorm, -mx_u * invnorm, -my_u * invnorm);
+
+	}
+
+
+ccl_device float2 direction_to_mei(float3 dir,float imageWidth,float imageHeight,
+	float xi, float4 distortion,
+	float4 projection)
+{
+	// Not implemented yet.
+	return make_float2(0.0f, 0.0f);
+}
+
 /* Mirror Ball <-> Cartesion direction */
 
 ccl_device float3 mirrorball_to_direction(float u, float v)
@@ -241,6 +304,9 @@ ccl_device_inline float3 panorama_to_direction(ccl_constant KernelCamera *cam, f
                                                   cam->fisheye_fov,
                                                   cam->sensorwidth,
                                                   cam->sensorheight);
+    case PANORAMA_MEI:
+		return mei_to_direction(u, v, cam->width, cam->height, cam->radius * cam->height / 2.f,
+								cam->xi, cam->mei_distortion, cam->mei_projection);
     case PANORAMA_FISHEYE_EQUISOLID:
     default:
       return fisheye_equisolid_to_direction(
@@ -265,6 +331,9 @@ ccl_device_inline float2 direction_to_panorama(ccl_constant KernelCamera *cam, f
                                                   cam->fisheye_lens_polynomial_coefficients,
                                                   cam->sensorwidth,
                                                   cam->sensorheight);
+    case PANORAMA_MEI:
+		return direction_to_mei(dir,cam->width, cam->height,
+								cam->xi, cam->mei_distortion, cam->mei_projection);
     case PANORAMA_FISHEYE_EQUISOLID:
     default:
       return direction_to_fisheye_equisolid(
