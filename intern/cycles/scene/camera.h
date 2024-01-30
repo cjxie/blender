@@ -81,6 +81,20 @@ class Camera : public Node {
   NODE_SOCKET_API(float, longitude_min)
   NODE_SOCKET_API(float, longitude_max)
 
+  /* Scaramuzza */
+  NODE_SOCKET_API(float, a0)
+  NODE_SOCKET_API(float, a1)
+  NODE_SOCKET_API(float, a2)
+  NODE_SOCKET_API(float, a3)
+  NODE_SOCKET_API(float, a4)
+  NODE_SOCKET_API(float, c)
+  NODE_SOCKET_API(float, d)
+  NODE_SOCKET_API(float, e)
+  NODE_SOCKET_API(float, shift_cx)
+  NODE_SOCKET_API(float, shift_cy)
+  NODE_SOCKET_API(float, radius)
+  
+
   NODE_SOCKET_API(float, fisheye_polynomial_k0)
   NODE_SOCKET_API(float, fisheye_polynomial_k1)
   NODE_SOCKET_API(float, fisheye_polynomial_k2)
